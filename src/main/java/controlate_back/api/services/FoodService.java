@@ -1,13 +1,11 @@
-package controlate_back.api.controller;
+package controlate_back.api.services;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
@@ -21,12 +19,12 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 @Service
-class FoodService {
+public class FoodService {
     @Value("${consumer.key}")
     private String consumerKey;
     @Value("${consumer.secret}")
     private String consumerSecret;
-//    private String baseUrl = "https://platform.fatsecret.com/rest/foods/search/v1";
+    //    private String baseUrl = "https://platform.fatsecret.com/rest/foods/search/v1";
     private String baseUrl = "https://platform.fatsecret.com/rest";
     private String searchByNameUrl = "/foods/search/v1";
     private String searchByIdUrl = "/food/v4";
@@ -142,27 +140,3 @@ class FoodService {
         return restTemplate.exchange(baseUrl.concat(this.searchByIdUrl) + "?food_id=" + encode(id) + "&format=json", HttpMethod.GET, entity, String.class);
     }
 }
-
-@RestController
-class FoodController {
-    private final FoodService foodService;
-
-    public FoodController(FoodService foodService) {
-        this.foodService = foodService;
-    }
-
-    @GetMapping("/search-food-by-name")
-    public ResponseEntity<String> searchFood(@RequestParam String searchTerm,
-                                             @RequestParam(defaultValue = "0") int pageNumber,
-                                             @RequestParam(defaultValue = "10") int maxResults) throws Exception {
-        return foodService.getProductsByName(searchTerm, pageNumber, maxResults);
-    }
-
-    @GetMapping("/search-food-by-id")
-    public ResponseEntity<String> searchFoodById(@RequestParam String id) throws Exception {
-        return foodService.getProductById(id);
-    }
-}
-
-
-
