@@ -23,11 +23,25 @@ public class UserController {
     }
 
     // Obtener un usuario por nombre de usuario
+    @GetMapping("/login")
+    public ResponseEntity<?> getUserByUsername(
+            @RequestParam String username,
+            @RequestParam String password
+    ) {
+        User user = userService.getUserByUsername(username).orElse(null);
+        if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.badRequest().body("Usuario no encontrado.");
+    }
+
     @GetMapping("/{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
-        return userService.getUserByUsername(username)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> checkUserLogging(@PathVariable String username) {
+        User user = userService.getUserByUsername(username).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("Usuario no encontrado.");
+        }
+        return ResponseEntity.ok(user);
     }
 
     // Crear un nuevo usuario
