@@ -6,7 +6,7 @@ import kong.unirest.Unirest;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ApiService {
+public class ApiTranslateService {
     private static final String MYMEMORY_API_URL = "https://api.mymemory.translated.net/get";
 
     public String translate(String text, String targetLang, String sourceLang) {

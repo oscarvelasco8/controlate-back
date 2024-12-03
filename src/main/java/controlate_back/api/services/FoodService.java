@@ -1,5 +1,6 @@
 package controlate_back.api.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +30,9 @@ public class FoodService {
     private String searchByNameUrl = "/foods/search/v1";
     private String searchByIdUrl = "/food/v4";
     private long lastTimestamp = 0;
+
+    @Autowired
+    private ApiTranslateService apiTranslateService;
 
     private String generateNonce(int length) {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -91,30 +95,54 @@ public class FoodService {
     }
 
     public ResponseEntity<String> getProductsByName(String searchTerm, int pageNumber, int maxResults) throws Exception {
-        Map<String, String> queryParams = Map.of(
-                "search_expression", searchTerm,
-                "format", "json",
-                "page_number", Integer.toString(pageNumber),
-                "max_results", Integer.toString(maxResults)
-        );
+        // Traducir y reemplazar espacios con comas
+        String translatedTerm = apiTranslateService.translate(searchTerm, "en", "es").replaceAll(" ", ",");
+        System.out.println("Translated Search Term (for URL): " + translatedTerm);
 
+        // Codificar para la firma exactamente dos veces
+        String doubleEncodedTerm = encode(encode(translatedTerm));
+        System.out.println("Double Encoded Search Term (for Signature): " + doubleEncodedTerm);
+
+        // Parámetros de consulta para la firma (usar término doblemente codificado aquí)
+        Map<String, String> queryParams = new TreeMap<>();
+        queryParams.put("search_expression", translatedTerm); // Sin codificar aquí
+        queryParams.put("format", "json");
+        queryParams.put("page_number", Integer.toString(pageNumber));
+        queryParams.put("max_results", Integer.toString(maxResults));
+
+        // Agregar parámetros OAuth
         Map<String, String> oauthParams = createOAuthParams();
-        String baseString = createSignatureBaseString("GET", baseUrl.concat(this.searchByNameUrl), new TreeMap<>(queryParams) {{
-            putAll(oauthParams);
-        }});
+        queryParams.putAll(oauthParams);
+
+        // Crear la firma base con los parámetros ordenados y el término doblemente codificado
+        String baseString = createSignatureBaseString("GET", baseUrl.concat(this.searchByNameUrl), queryParams);
+        System.out.println("Base String: " + baseString);
+
+        // Generar la firma
         String signature = calculateSignature(baseString, consumerSecret, "");
 
+        // Crear encabezado de autorización con la firma
         String authorizationHeader = generateAuthorizationHeader(oauthParams, signature);
 
+        // Configurar encabezados para la solicitud HTTP
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", authorizationHeader);
         headers.set("Content-Type", "application/json");
         headers.set("Accept", "application/json");
 
+        // Construir la URL final (sin codificar nuevamente el término)
+        String url = baseUrl.concat(this.searchByNameUrl)
+                + "?search_expression=" + translatedTerm // Sin codificar nuevamente
+                + "&format=json&page_number=" + pageNumber
+                + "&max_results=" + maxResults;
+        System.out.println("Request URL: " + url);
+
+        // Realizar la solicitud
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return restTemplate.exchange(baseUrl.concat(this.searchByNameUrl) + "?search_expression=" + encode(searchTerm) + "&format=json&page_number=" + pageNumber + "&max_results=" + maxResults, HttpMethod.GET, entity, String.class);
+        return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
     }
+
 
     public ResponseEntity<String> getProductById(String id) throws Exception {
         Map<String, String> queryParams = Map.of(

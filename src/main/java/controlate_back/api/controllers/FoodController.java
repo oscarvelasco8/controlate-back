@@ -13,14 +13,14 @@ public class FoodController {
         this.foodService = foodService;
     }
 
-    @GetMapping("/search-food-by-name")
+    @GetMapping("/api/search-food-by-name")
     public ResponseEntity<String> searchFood(@RequestParam String searchTerm,
                                              @RequestParam(defaultValue = "0") int pageNumber,
                                              @RequestParam(defaultValue = "10") int maxResults) throws Exception {
         return foodService.getProductsByName(searchTerm, pageNumber, maxResults);
     }
 
-    @GetMapping("/search-food-by-id")
+    @GetMapping("/api/search-food-by-id")
     public ResponseEntity<String> searchFoodById(@RequestParam String id) throws Exception {
         return foodService.getProductById(id);
     }

@@ -1,6 +1,6 @@
 package controlate_back.api.controllers;
 
-import controlate_back.api.services.ApiService;
+import controlate_back.api.services.ApiTranslateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/translate")
-public class ApiController {
+public class ApiTranslateController {
     @Autowired
-    private ApiService translationService;
+    private ApiTranslateService translationService;
 
     @PostMapping
     public String translate(@RequestParam String text,
