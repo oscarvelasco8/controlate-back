@@ -16,7 +16,7 @@ public class FoodController {
     @GetMapping("/api/search-food-by-name")
     public ResponseEntity<String> searchFood(@RequestParam String searchTerm,
                                              @RequestParam(defaultValue = "0") int pageNumber,
-                                             @RequestParam(defaultValue = "10") int maxResults) throws Exception {
+                                             @RequestParam(defaultValue = "2") int maxResults) throws Exception {
         return foodService.getProductsByName(searchTerm, pageNumber, maxResults);
     }
 
