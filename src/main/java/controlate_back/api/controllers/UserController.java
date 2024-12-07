@@ -28,20 +28,12 @@ public class UserController {
             @RequestParam String password
     ) {
         User user = userService.getUserByUsername(username).orElse(null);
-        if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+        if (user != null && user.getUsername().equals(username) && user.getPassword().equals(password)) {
             return ResponseEntity.ok(user);
         }
         return ResponseEntity.badRequest().body("Usuario no encontrado.");
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<?> checkUserLogging(@PathVariable String username) {
-        User user = userService.getUserByUsername(username).orElse(null);
-        if (user == null) {
-            return ResponseEntity.badRequest().body("Usuario no encontrado.");
-        }
-        return ResponseEntity.ok(user);
-    }
 
     // Crear un nuevo usuario
     @PostMapping
