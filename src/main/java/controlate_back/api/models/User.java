@@ -44,12 +44,21 @@ public class User {
     @Column(nullable = false, length = 100)
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender", nullable = false, length = 50)
+    private gender gender;
+
     public enum FactorActividad {
         POCO_SEDENTARIO,
         SEDENTARIO,
         MODERADAMENTE_SEDENTARIO,
         ACTIVO,
         MUY_ACTIVO
+    }
+
+    public enum gender{
+        MALE,
+        FEMALE
     }
 }
 

@@ -47,5 +47,32 @@ public class UserService {
     public void deleteUser(String username) {
         userRepository.deleteById(username);
     }
+
+    public float calculateTMB(User user) {
+        float tmb;
+        if (user.getGender() == User.gender.MALE) {
+            tmb = 10 * user.getWeight() + 6.25f * user.getHeight() - 5 * user.getAge() + 5;
+        } else {
+            tmb = 10 * user.getWeight() + 6.25f * user.getHeight() - 5 * user.getAge() - 161;
+        }
+        return tmb;
+    }
+
+    // Aplicar factor de actividad para obtener el requerimiento calórico diario:
+    public float calculateDailyCalories(User user) {
+        float tmb = calculateTMB(user);
+        return tmb * getActivityFactorValue(user.getActivityFactor());
+    }
+
+
+    private float getActivityFactorValue(User.FactorActividad activityFactor) {
+        return switch (activityFactor) {
+            case POCO_SEDENTARIO -> 1.375f;
+            case MODERADAMENTE_SEDENTARIO -> 1.55f;
+            case ACTIVO -> 1.725f;
+            case MUY_ACTIVO -> 1.9f;
+            default -> 1.2f;
+        };
+    }
 }
 

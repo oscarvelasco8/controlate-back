@@ -67,5 +67,14 @@ public class UserController {
         userService.deleteUser(username);
         return ResponseEntity.ok("Usuario eliminado con éxito.");
     }
+
+    @GetMapping("/tmb/{username}")
+    public float calculateTMB(@PathVariable String username) {
+        User user = userService.getUserByUsername(username).orElse(null);
+        if (user != null) {
+            return userService.calculateDailyCalories(user);
+        }
+        return 0;
+    }
 }
 

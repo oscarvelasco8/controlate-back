@@ -14,9 +14,8 @@ import lombok.*;
 public class UserCaloriesHistory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "log_id")
-    private Integer logId;  // Clave primaria auto-incremental
+    private String logId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "username", referencedColumnName = "username", insertable = false, updatable = false)

@@ -23,7 +23,7 @@ public class UserCaloriesHistoryController {
 
     // Obtener un registro por ID
     @GetMapping("/{logId}")
-    public Optional<UserCaloriesHistory> getCaloriesHistoryById(@PathVariable Integer logId) {
+    public Optional<UserCaloriesHistory> getCaloriesHistoryById(@PathVariable String logId) {
         return userCaloriesHistoryService.getCaloriesHistoryById(logId);
     }
 
@@ -35,7 +35,7 @@ public class UserCaloriesHistoryController {
 
     // Eliminar un registro de historia de calorías
     @DeleteMapping("/{logId}")
-    public void deleteCaloriesHistory(@PathVariable Integer logId) {
+    public void deleteCaloriesHistory(@PathVariable String logId) {
         userCaloriesHistoryService.deleteCaloriesHistory(logId);
     }
 

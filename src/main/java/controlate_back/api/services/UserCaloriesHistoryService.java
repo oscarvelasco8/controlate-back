@@ -18,7 +18,7 @@ public class UserCaloriesHistoryService {
         return userCaloriesHistoryRepository.findAll();
     }
 
-    public Optional<UserCaloriesHistory> getCaloriesHistoryById(Integer logId) {
+        public Optional<UserCaloriesHistory> getCaloriesHistoryById(String logId) {
         return userCaloriesHistoryRepository.findById(logId);
     }
 
@@ -26,7 +26,7 @@ public class UserCaloriesHistoryService {
         return userCaloriesHistoryRepository.save(history);
     }
 
-    public void deleteCaloriesHistory(Integer logId) {
+    public void deleteCaloriesHistory(String logId) {
         userCaloriesHistoryRepository.deleteById(logId);
     }
 
