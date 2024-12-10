@@ -48,6 +48,10 @@ public class User {
     @Column(name = "gender", nullable = false, length = 50)
     private gender gender;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "objective", length = 50)
+    private objective objective;
+
     public enum FactorActividad {
         POCO_SEDENTARIO,
         SEDENTARIO,
@@ -59,6 +63,14 @@ public class User {
     public enum gender{
         MALE,
         FEMALE
+    }
+
+    public enum objective{
+        BAJAR_LIGERO,
+        BAJAR_MODERADO,
+        MANTENIMIENTO,
+        SUBIR_LIGERO,
+        SUBIR_MODERADO
     }
 }
 

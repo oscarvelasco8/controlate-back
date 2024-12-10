@@ -74,5 +74,13 @@ public class UserService {
             default -> 1.2f;
         };
     }
+
+    public void setObjective(User user, User.objective objective) {
+        user.setObjective(objective);
+    }
+
+    public User.objective getObjective(User user) {
+        return user.getObjective();
+    }
 }
 

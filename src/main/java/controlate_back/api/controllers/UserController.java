@@ -76,5 +76,23 @@ public class UserController {
         }
         return 0;
     }
+
+    @PatchMapping("/objective/{username}")
+    public void updateObjective(@PathVariable String username, @RequestBody String objective) {
+        User user = userService.getUserByUsername(username).orElse(null);
+        if (user != null) {
+            user.setObjective(User.objective.valueOf(objective));
+            userService.updateUser(username, user);
+        }
+    }
+
+    @GetMapping("/objective/{username}")
+    public String getObjective(@PathVariable String username) {
+        User user = userService.getUserByUsername(username).orElse(null);
+        if (user != null) {
+            return user.getObjective().toString();
+        }
+        return null;
+    }
 }
 
