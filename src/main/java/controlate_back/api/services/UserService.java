@@ -40,6 +40,9 @@ public class UserService {
             user.setActivityFactor(userDetails.getActivityFactor());
             user.setInsulinaFactor(userDetails.getInsulinaFactor());
             user.setPassword(userDetails.getPassword());
+            user.setUsername(userDetails.getUsername());
+            user.setGender(userDetails.getGender());
+            user.setObjective(userDetails.getObjective());
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("User not found with username: " + username));
     }

@@ -21,6 +21,16 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    //Obtener usuario
+    @GetMapping("/{username}")
+    public ResponseEntity<?> getUser(@PathVariable String username) {
+        User user = userService.getUserByUsername(username).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("Usuario no encontrado.");
+        }
+        return ResponseEntity.ok(user);
+    }
+
     // Obtener un usuario por nombre de usuario
     @GetMapping("/login")
     public ResponseEntity<?> getUserByUsername(
@@ -50,14 +60,14 @@ public class UserController {
 
     // Actualizar un usuario existente
     @PutMapping("/{username}")
-    public ResponseEntity<User> updateUser(
+    public ResponseEntity<?> updateUser(
             @PathVariable String username,
             @RequestBody User userDetails) {
         try {
             User updatedUser = userService.updateUser(username, userDetails);
             return ResponseEntity.ok(updatedUser);
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
