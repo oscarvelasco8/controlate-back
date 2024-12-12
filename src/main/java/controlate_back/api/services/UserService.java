@@ -43,7 +43,7 @@ public class UserService {
             user.setUsername(userDetails.getUsername());
             user.setGender(userDetails.getGender());
             user.setObjective(userDetails.getObjective());
-            user.setICR(userDetails.getICR());
+            user.setIcr(userDetails.getIcr());
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("User not found with username: " + username));
     }

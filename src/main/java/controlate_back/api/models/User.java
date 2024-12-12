@@ -31,7 +31,7 @@ public class User {
     private Float height;
 
     @Column
-    private Float ICR;
+    private Float icr;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "activity_factor", nullable = false, length = 50)
