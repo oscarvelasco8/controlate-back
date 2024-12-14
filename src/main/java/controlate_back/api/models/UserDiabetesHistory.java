@@ -47,5 +47,5 @@ public class UserDiabetesHistory {
     private String units;
 
     @Column(nullable = false)
-    private String portions;
+    private Float portions;
 }
