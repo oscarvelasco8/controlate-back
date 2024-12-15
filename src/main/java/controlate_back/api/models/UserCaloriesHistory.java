@@ -14,7 +14,7 @@ import lombok.*;
 public class UserCaloriesHistory {
 
     @Id
-    @Column(name = "log_id")
+    @Column(name = "log_id", nullable = false, unique = true)
     private String logId;
 
     @ManyToOne(fetch = FetchType.LAZY)
