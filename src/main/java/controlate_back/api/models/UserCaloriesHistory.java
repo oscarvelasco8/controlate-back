@@ -54,8 +54,4 @@ public class UserCaloriesHistory {
 
     @Column(nullable = false)
     private String units;
-
-    public String getLogId() {
-        return logId;
-    }
 }

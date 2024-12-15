@@ -30,7 +30,6 @@ public class UserCaloriesHistoryController {
     // Crear un nuevo registro de historia de calorías
     @PostMapping
     public UserCaloriesHistory createCaloriesHistory(@RequestBody UserCaloriesHistory history) {
-        System.out.println(history.getLogId());
         return userCaloriesHistoryService.saveCaloriesHistory(history);
     }
 
