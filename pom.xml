@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>controlate-back</groupId>
-	<artifactId>api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>api</name>
+	<artifactId>controlate</artifactId>
+	<version>0.0.1</version>
+	<name>controlate</name>
 	<description>API for Controlate Project</description>
 	<url/>
 	<licenses>
