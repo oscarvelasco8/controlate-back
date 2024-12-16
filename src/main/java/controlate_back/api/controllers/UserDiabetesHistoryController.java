@@ -5,7 +5,10 @@ import controlate_back.api.services.UserDiabetesHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -42,6 +45,25 @@ public class UserDiabetesHistoryController {
     public List<UserDiabetesHistory> getUserDiabetesByDate(
             @RequestParam String username,
             @RequestParam String logDate) {
-        return userDiabetesHistoryService.getDiabetesHistoryByMeal(username, logDate);
+        // Define el formato de la fecha
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        // Parsea la fecha con el formato correcto
+        LocalDate parsedDate = LocalDate.parse(logDate, formatter);
+        return userDiabetesHistoryService.getDiabetesHistoryByMeal(username, parsedDate);
+    }
+
+    @GetMapping("last-7days")
+    public Map<LocalDate, Double> getUserHistoryByDateRange(
+            @RequestParam String username,
+            @RequestParam String startDate) {
+
+        // Define el formato de la fecha
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        // Parsea la fecha con el formato correcto
+        LocalDate parsedStartDate = LocalDate.parse(startDate, formatter);
+
+        return userDiabetesHistoryService.getPortionsForDateRange(username, parsedStartDate);
     }
 }

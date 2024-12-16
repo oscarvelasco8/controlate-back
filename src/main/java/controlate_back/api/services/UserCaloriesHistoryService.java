@@ -59,7 +59,7 @@ public class UserCaloriesHistoryService {
             result.put(date, caloriesMap.getOrDefault(date, 0.0));
         }
 
-        System.out.println(result);
+
         return result;
     }
 
