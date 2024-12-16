@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -50,7 +53,7 @@ public class UserCaloriesHistory {
     private Integer foodId;
 
     @Column(nullable = false)
-    private String logDate;
+    private LocalDate logDate;
 
     @Column(nullable = false)
     private String units;
