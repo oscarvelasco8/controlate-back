@@ -3,10 +3,12 @@ package controlate_back.api.controllers;
 import controlate_back.api.models.UserDiabetesHistory;
 import controlate_back.api.services.UserDiabetesHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,14 +33,18 @@ public class UserDiabetesHistoryController {
 
     // Crear un nuevo registro de historia de calorías
     @PostMapping
-    public UserDiabetesHistory createDiabetesHistory(@RequestBody UserDiabetesHistory history) {
-        return userDiabetesHistoryService.saveDiabetesHistory(history);
+    public ResponseEntity<?> createDiabetesHistory(@RequestBody List<UserDiabetesHistory> history) {
+        history.forEach(userDiabetesHistory -> userDiabetesHistoryService.saveDiabetesHistory(userDiabetesHistory));
+        return ResponseEntity.ok(history);
     }
 
     // Eliminar un registro de historia de calorías
-    @DeleteMapping("/{logId}")
-    public void deleteDiabetesHistory(@PathVariable String logId) {
-        userDiabetesHistoryService.deleteDiabetesHistory(logId);
+    @DeleteMapping
+    public void deleteHistory(@RequestParam("ids") String ids) {
+        List<String> logIds = Arrays.stream(ids.split(","))
+                .toList();
+        // Lógica para borrar registros por sus IDs
+        logIds.forEach(id -> userDiabetesHistoryService.deleteDiabetesHistory(id));
     }
 
     @GetMapping("/by-date")
