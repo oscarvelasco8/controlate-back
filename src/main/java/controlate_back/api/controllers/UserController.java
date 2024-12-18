@@ -82,6 +82,15 @@ public class UserController {
     public float calculateTMB(@PathVariable String username) {
         User user = userService.getUserByUsername(username).orElse(null);
         if (user != null) {
+            return userService.calculateTMB(user);
+        }
+        return 0;
+    }
+
+    @GetMapping("/daily-calories/{username}")
+    public float calculateDailyCalories(@PathVariable String username) {
+        User user = userService.getUserByUsername(username).orElse(null);
+        if (user != null) {
             return userService.calculateDailyCalories(user);
         }
         return 0;

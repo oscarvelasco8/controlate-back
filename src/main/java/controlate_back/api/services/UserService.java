@@ -65,7 +65,7 @@ public class UserService {
     // Aplicar factor de actividad para obtener el requerimiento calórico diario:
     public float calculateDailyCalories(User user) {
         float tmb = calculateTMB(user);
-        return tmb * getActivityFactorValue(user.getActivityFactor());
+        return tmb * getActivityFactorValue(user.getActivityFactor()) * getObjectiveValue(user.getObjective());
     }
 
 
@@ -76,6 +76,16 @@ public class UserService {
             case ACTIVO -> 1.725f;
             case MUY_ACTIVO -> 1.9f;
             default -> 1.2f;
+        };
+    }
+
+    private float getObjectiveValue(User.objective objective) {
+        return switch (objective) {
+            case BAJAR_LIGERO -> 0.9f;
+            case BAJAR_MODERADO -> 0.8f;
+            case SUBIR_MODERADO -> 1.2f;
+            case SUBIR_LIGERO -> 1.3f;
+            default -> 1.0f;
         };
     }
 
