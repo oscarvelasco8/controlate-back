@@ -4,6 +4,7 @@ import controlate_back.api.models.User;
 import controlate_back.api.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,10 +39,15 @@ public class UserController {
             @RequestParam String password
     ) {
         User user = userService.getUserByUsername(username).orElse(null);
-        if (user != null && user.getUsername().equals(username) && user.getPassword().equals(password)) {
-            return ResponseEntity.ok(user);
+
+        if (user != null) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            // Comparar la contraseña proporcionada con el hash almacenado
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                return ResponseEntity.ok(user);
+            }
         }
-        return ResponseEntity.badRequest().body("Usuario no encontrado.");
+        return ResponseEntity.badRequest().body("Usuario o contraseña incorrectos.");
     }
 
 
@@ -49,14 +55,20 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user) {
         if (userService.getUserByUsername(user.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("El nombre de usuario ya está en uso.");
+            return ResponseEntity.badRequest().body("El nombre de usuario ya está en uso.");
         }
         if (userService.getUserByEmail(user.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("El correo electrónico ya está en uso.");
+            return ResponseEntity.badRequest().body("El correo electrónico ya está en uso.");
         }
+
+        // Hashear la contraseña antes de guardarla
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         userService.createUser(user);
         return ResponseEntity.ok(user);
     }
+
 
     // Actualizar un usuario existente
     @PutMapping("/{username}")
