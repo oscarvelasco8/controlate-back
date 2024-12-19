@@ -65,6 +65,9 @@ public class UserController {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        System.out.println("Password hardcodeada: " + user.getPassword());
+
+
         userService.createUser(user);
         return ResponseEntity.ok(user);
     }
