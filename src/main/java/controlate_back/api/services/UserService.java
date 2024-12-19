@@ -4,6 +4,7 @@ import controlate_back.api.models.User;
 import controlate_back.api.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +31,7 @@ public class UserService {
     }
 
     public User updateUser(String username, User userDetails) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return userRepository.findById(username).map(user -> {
             user.setName(userDetails.getName());
             user.setLastname(userDetails.getLastname());
@@ -39,7 +41,7 @@ public class UserService {
             user.setHeight(userDetails.getHeight());
             user.setActivityFactor(userDetails.getActivityFactor());
             user.setInsulinaFactor(userDetails.getInsulinaFactor());
-            user.setPassword(userDetails.getPassword());
+            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
             user.setUsername(userDetails.getUsername());
             user.setGender(userDetails.getGender());
             user.setObjective(userDetails.getObjective());
