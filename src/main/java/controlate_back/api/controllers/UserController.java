@@ -1,12 +1,19 @@
 package controlate_back.api.controllers;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import controlate_back.api.models.User;
 import controlate_back.api.services.UserService;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.SecretKey;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -16,13 +23,23 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    private final SecretKey jwtSecretKey;
+
+    @Value("${jwt.expiration}") // Lee el tiempo de expiración desde application.properties
+    private long jwtExpiration;
+
+    public UserController(@Value("${jwt.secret}") String jwtSecret) {
+        // Convertimos la clave secreta en una instancia de SecretKey
+        this.jwtSecretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+    }
+
     // Obtener todos los usuarios
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    //Obtener usuario
+    // Obtener usuario
     @GetMapping("/{username}")
     public ResponseEntity<?> getUser(@PathVariable String username) {
         User user = userService.getUserByUsername(username).orElse(null);
@@ -32,24 +49,37 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    // Obtener un usuario por nombre de usuario
     @GetMapping("/login")
-    public ResponseEntity<?> getUserByUsername(
-            @RequestParam String username,
-            @RequestParam String password
-    ) {
+    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
         User user = userService.getUserByUsername(username).orElse(null);
 
         if (user != null) {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            // Comparar la contraseña proporcionada con el hash almacenado
             if (passwordEncoder.matches(password, user.getPassword())) {
-                return ResponseEntity.ok(user);
+                // Generar el token JWT
+                String token = Jwts.builder()
+                        .setSubject(user.getUsername())
+                        .setIssuedAt(new Date())
+                        .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                        .signWith(jwtSecretKey, SignatureAlgorithm.HS512) // Usamos la clave segura
+                        .compact();
+
+                // Devolver el token al cliente
+                return ResponseEntity.ok(new JwtResponse(token));
             }
         }
         return ResponseEntity.badRequest().body("Usuario o contraseña incorrectos.");
     }
 
+    // Clase interna para encapsular el token en la respuesta
+    @Getter
+    private static class JwtResponse {
+        private final String token;
+
+        public JwtResponse(String token) {
+            this.token = token;
+        }
+    }
 
     // Crear un nuevo usuario
     @PostMapping
@@ -65,13 +95,9 @@ public class UserController {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        System.out.println("Password hardcodeada: " + user.getPassword());
-
-
         userService.createUser(user);
         return ResponseEntity.ok(user);
     }
-
 
     // Actualizar un usuario existente
     @PutMapping("/{username}")
@@ -90,7 +116,7 @@ public class UserController {
     @DeleteMapping("/{username}")
     public ResponseEntity<?> deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
-        return ResponseEntity.ok("Usuario eliminado con éxito.");
+        return ResponseEntity.ok("Usuario eliminado con éxito.");
     }
 
     @GetMapping("/tmb/{username}")
@@ -129,4 +155,3 @@ public class UserController {
         return null;
     }
 }
-

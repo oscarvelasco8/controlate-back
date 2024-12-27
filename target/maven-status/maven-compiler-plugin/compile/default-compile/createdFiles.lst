@@ -1,8 +1,0 @@
-controlate_back\api\ApiApplication.class
-controlate_back\api\controllers\ApiTranslateController.class
-controlate_back\api\controllers\UserCaloriesHistoryController.class
-controlate_back\api\controllers\FoodController.class
-controlate_back\api\services\FoodService.class
-controlate_back\api\services\FoodService$1.class
-controlate_back\api\services\ApiTranslateService.class
-controlate_back\api\configuration\CorsConfig.class
