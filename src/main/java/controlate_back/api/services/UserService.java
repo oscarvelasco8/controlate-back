@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -33,22 +34,49 @@ public class UserService {
     public User updateUser(String username, User userDetails) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return userRepository.findById(username).map(user -> {
-            user.setName(userDetails.getName());
-            user.setLastname(userDetails.getLastname());
-            user.setEmail(userDetails.getEmail());
-            user.setAge(userDetails.getAge());
-            user.setWeight(userDetails.getWeight());
-            user.setHeight(userDetails.getHeight());
-            user.setActivityFactor(userDetails.getActivityFactor());
-            user.setInsulinaFactor(userDetails.getInsulinaFactor());
-            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
-            user.setUsername(userDetails.getUsername());
-            user.setGender(userDetails.getGender());
-            user.setObjective(userDetails.getObjective());
-            user.setIcr(userDetails.getIcr());
+            if (userDetails.getName() != null) {
+                user.setName(userDetails.getName());
+            }
+            if (userDetails.getLastname() != null) {
+                user.setLastname(userDetails.getLastname());
+            }
+            if (userDetails.getEmail() != null) {
+                user.setEmail(userDetails.getEmail());
+            }
+            if (userDetails.getAge() != null) {
+                user.setAge(userDetails.getAge());
+            }
+            if (userDetails.getWeight() != null) {
+                user.setWeight(userDetails.getWeight());
+            }
+            if (userDetails.getHeight() != null) {
+                user.setHeight(userDetails.getHeight());
+            }
+            if (userDetails.getActivityFactor() != null) {
+                user.setActivityFactor(userDetails.getActivityFactor());
+            }
+            if (userDetails.getInsulinaFactor() != null) {
+                user.setInsulinaFactor(userDetails.getInsulinaFactor());
+            }
+            if (userDetails.getPassword() != null) {
+                user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+            }
+            if (userDetails.getUsername() != null) {
+                user.setUsername(userDetails.getUsername());
+            }
+            if (userDetails.getGender() != null) {
+                user.setGender(userDetails.getGender());
+            }
+            if (userDetails.getObjective() != null) {
+                user.setObjective(userDetails.getObjective());
+            }
+            if (userDetails.getIcr() != null) {
+                user.setIcr(userDetails.getIcr());
+            }
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("User not found with username: " + username));
     }
+
 
     public void deleteUser(String username) {
         userRepository.deleteById(username);

@@ -100,7 +100,7 @@ public class UserController {
     }
 
     // Actualizar un usuario existente
-    @PutMapping("/{username}")
+    @PatchMapping("/{username}")
     public ResponseEntity<?> updateUser(
             @PathVariable String username,
             @RequestBody User userDetails) {
