@@ -16,6 +16,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -28,11 +31,13 @@ public class UserService {
     }
 
     public void createUser(User user) {
+        user.setObjective(User.objective.MANTENIMIENTO);
         userRepository.save(user);
     }
 
     public User updateUser(String username, User userDetails) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        //System.out.println(userDetails.getPassword());
+        //System.out.println(userDetails.getPassword() != null);
         return userRepository.findById(username).map(user -> {
             if (userDetails.getName() != null) {
                 user.setName(userDetails.getName());
@@ -75,6 +80,12 @@ public class UserService {
             }
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+    }
+
+    public void updateObjective(String username, String objective) {
+        User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+        user.setObjective(User.objective.valueOf(objective));
+        userRepository.save(user);
     }
 
 

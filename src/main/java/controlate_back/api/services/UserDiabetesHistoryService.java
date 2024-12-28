@@ -40,7 +40,7 @@ public class UserDiabetesHistoryService {
     }
 
     public Map<LocalDate, Double> getPortionsForDateRange(String username, LocalDate startDate) {
-        System.out.println("START DATE: " + startDate);
+        //System.out.println("START DATE: " + startDate);
         // Calcular la fecha de inicio (7 días antes de la fecha dada)
         LocalDate endDate = startDate.minusDays(7); // 7 días antes de la fecha de inicio
 
@@ -49,7 +49,7 @@ public class UserDiabetesHistoryService {
 
         // Generar las fechas en el rango (desde endDate hasta startDate)
         List<LocalDate> dateRange = generateDateRange(endDate, startDate);
-        System.out.println(dateRange);
+        //System.out.println(dateRange);
 
         // Crear un mapa de las calorías por fecha utilizando TreeMap para mantener el orden
         Map<LocalDate, Double> portionsMap = records.stream()
@@ -63,7 +63,7 @@ public class UserDiabetesHistoryService {
             result.put(date, portionsMap.getOrDefault(date, 0.0));
         }
 
-        System.out.println(result);
+        //System.out.println(result);
         return result;
     }
 

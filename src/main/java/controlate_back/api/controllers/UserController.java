@@ -23,6 +23,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     private final SecretKey jwtSecretKey;
 
     @Value("${jwt.expiration}") // Lee el tiempo de expiración desde application.properties
@@ -54,7 +57,6 @@ public class UserController {
         User user = userService.getUserByUsername(username).orElse(null);
 
         if (user != null) {
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             if (passwordEncoder.matches(password, user.getPassword())) {
                 // Generar el token JWT
                 String token = Jwts.builder()
@@ -138,11 +140,12 @@ public class UserController {
     }
 
     @PatchMapping("/objective/{username}")
-    public void updateObjective(@PathVariable String username, @RequestBody String objective) {
-        User user = userService.getUserByUsername(username).orElse(null);
-        if (user != null) {
-            user.setObjective(User.objective.valueOf(objective));
-            userService.updateUser(username, user);
+    public ResponseEntity<?> updateObjective(@PathVariable String username, @RequestBody String objective) {
+        try{
+            userService.updateObjective(username, objective);
+            return ResponseEntity.ok("Objetivo actualizado con éxito.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

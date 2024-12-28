@@ -97,11 +97,11 @@ public class FoodService {
     public ResponseEntity<String> getProductsByName(String searchTerm, int pageNumber, int maxResults) throws Exception {
         // Traducir y reemplazar espacios con comas
         String translatedTerm = apiTranslateService.translate(searchTerm, "en", "es").replaceAll(" ", ",");
-        System.out.println("Translated Search Term (for URL): " + translatedTerm);
+//        System.out.println("Translated Search Term (for URL): " + translatedTerm);
 
         // Codificar para la firma exactamente dos veces
         String doubleEncodedTerm = encode(encode(translatedTerm));
-        System.out.println("Double Encoded Search Term (for Signature): " + doubleEncodedTerm);
+//        System.out.println("Double Encoded Search Term (for Signature): " + doubleEncodedTerm);
 
         // Parámetros de consulta para la firma (usar término doblemente codificado aquí)
         Map<String, String> queryParams = new TreeMap<>();
@@ -116,7 +116,7 @@ public class FoodService {
 
         // Crear la firma base con los parámetros ordenados y el término doblemente codificado
         String baseString = createSignatureBaseString("GET", baseUrl.concat(this.searchByNameUrl), queryParams);
-        System.out.println("Base String: " + baseString);
+//        System.out.println("Base String: " + baseString);
 
         // Generar la firma
         String signature = calculateSignature(baseString, consumerSecret, "");
@@ -136,7 +136,7 @@ public class FoodService {
                 + "?search_expression=" + translatedTerm // Sin codificar nuevamente
                 + "&format=json&page_number=" + pageNumber
                 + "&max_results=" + maxResults;
-        System.out.println("Request URL: " + url);
+        //System.out.println("Request URL: " + url);
 
         // Realizar la solicitud
         HttpEntity<String> entity = new HttpEntity<>(headers);

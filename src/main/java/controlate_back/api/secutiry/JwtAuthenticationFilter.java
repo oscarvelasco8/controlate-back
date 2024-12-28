@@ -21,7 +21,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String SECRET_KEY;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("Secret Key: " + SECRET_KEY);
+//        System.out.println("Secret Key: " + SECRET_KEY);
 
         // Obtener el encabezado Authorization
         String header = request.getHeader("Authorization");
@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);  // Extraer el token (sin el "Bearer ")
-            System.out.println("Token recibido: " + token);
+//            System.out.println("Token recibido: " + token);
 
             try {
                 // Validar y extraer información del JWT
