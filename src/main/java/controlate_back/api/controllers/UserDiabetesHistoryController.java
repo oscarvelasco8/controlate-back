@@ -51,9 +51,21 @@ public class UserDiabetesHistoryController {
     public List<UserDiabetesHistory> getUserDiabetesByDate(
             @RequestParam String username,
             @RequestParam String logDate) {
-        if (Integer.parseInt(logDate.split("-")[2]) < 10){
-            logDate = logDate.split("-")[0] + "-" + logDate.split("-")[1] + "-0" + logDate.split("-")[2];
+        String[] dateParts = logDate.split("-"); // Dividir la fecha una vez
+        String year = dateParts[0];
+        String month = dateParts[1];
+        String day = dateParts[2];
+
+        // Asegurarse de que el mes y el día tienen dos dígitos
+        if (month.length() == 1) {
+            month = "0" + month;
         }
+        if (day.length() == 1) {
+            day = "0" + day;
+        }
+
+        // Reconstruir la fecha con los ceros añadidos si es necesario
+        logDate = year + "-" + month + "-" + day;
 
         // Define el formato de la fecha
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -68,9 +80,21 @@ public class UserDiabetesHistoryController {
             @RequestParam String username,
             @RequestParam String startDate) {
 
-        if (Integer.parseInt(startDate.split("-")[2]) < 10){
-            startDate = startDate.split("-")[0] + "-" + startDate.split("-")[1] + "-0" + startDate.split("-")[2];
+        String[] dateParts = startDate.split("-"); // Dividir la fecha una vez
+        String year = dateParts[0];
+        String month = dateParts[1];
+        String day = dateParts[2];
+
+        // Asegurarse de que el mes y el día tienen dos dígitos
+        if (month.length() == 1) {
+            month = "0" + month;
         }
+        if (day.length() == 1) {
+            day = "0" + day;
+        }
+
+        // Reconstruir la fecha con los ceros añadidos si es necesario
+        startDate = year + "-" + month + "-" + day;
 
         // Define el formato de la fecha
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
