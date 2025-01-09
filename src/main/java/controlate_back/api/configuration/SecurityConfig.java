@@ -1,6 +1,6 @@
 package controlate_back.api.configuration;
 
-import controlate_back.api.secutiry.JwtAuthenticationFilter;
+import controlate_back.api.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,11 +31,15 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configurar CORS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll() // Permitir registro
-                        .requestMatchers(HttpMethod.GET, "/api/users/login").permitAll() // Permitir login
-                        .anyRequest().authenticated() // Todas las demás requieren autenticación
+                        // Permitir acceso sin autenticación a Swagger UI y la documentación
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        // Permitir acceso sin autenticación a registro y login
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users/login").permitAll()
+                        // Requerir autenticación para todas las demás rutas
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Agregar filtro JWT
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -53,9 +57,10 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration); // Aplicar configuración a todas las rutas
         return source;
     }
-
+    // Define un bean para encriptar contraseñas con BCrypt
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
+        // Retorna un objeto BCryptPasswordEncoder para encriptar las contraseñas
         return new BCryptPasswordEncoder();
     }
 }
