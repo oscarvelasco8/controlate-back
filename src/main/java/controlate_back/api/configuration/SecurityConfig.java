@@ -25,6 +25,8 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+    // Configuración de seguridad
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -43,6 +45,8 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    // Configuración de CORS
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

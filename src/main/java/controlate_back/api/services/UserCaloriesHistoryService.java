@@ -16,6 +16,8 @@ public class UserCaloriesHistoryService {
     @Autowired
     private UserCaloriesHistoryRepository userCaloriesHistoryRepository;
 
+    // Metodo para obtener todo el historial de calorias
+
     public List<UserCaloriesHistory> getAllCaloriesHistory() {
         return userCaloriesHistoryRepository.findAll();
     }
@@ -24,17 +26,25 @@ public class UserCaloriesHistoryService {
         return userCaloriesHistoryRepository.findById(logId);
     }
 
+    // Metodo para guardar un registro
+
     public UserCaloriesHistory saveCaloriesHistory(UserCaloriesHistory history) {
         return userCaloriesHistoryRepository.save(history);
     }
+
+    // Metodo para eliminar un registro
 
     public void deleteCaloriesHistory(String logId) {
         userCaloriesHistoryRepository.deleteById(logId);
     }
 
+    // Metodo para obtener el historial de calorias por comida
+
     public List<UserCaloriesHistory> getCaloriesHistoryByMeal(String username, LocalDate logDate) {
         return userCaloriesHistoryRepository.findByUsernameAndDate(username, logDate);
     }
+
+    // Metodo para obtener el historial de calorias por fecha
 
     public Map<LocalDate, Double> getCaloriesForDateRange(String username, LocalDate startDate) {
         // Calcular la fecha de inicio (7 días antes de la fecha dada)
@@ -63,6 +73,7 @@ public class UserCaloriesHistoryService {
         return result;
     }
 
+    // Metodo para generar el rango de fechas
 
     private List<LocalDate> generateDateRange(LocalDate startDate, LocalDate endDate) {
         return Stream.iterate(startDate, date -> date.plusDays(1))

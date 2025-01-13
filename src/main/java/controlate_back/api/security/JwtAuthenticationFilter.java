@@ -19,17 +19,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Value("${jwt.secret}")
     private String SECRET_KEY;
+
+    //Filtro para validar el JWT
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-//        System.out.println("Secret Key: " + SECRET_KEY);
 
         // Obtener el encabezado Authorization
         String header = request.getHeader("Authorization");
-//        System.out.println("Authorization Header: " + header);
 
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);  // Extraer el token (sin el "Bearer ")
-//            System.out.println("Token recibido: " + token);
 
             try {
                 // Validar y extraer información del JWT
@@ -40,7 +39,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .getBody();
 
                 String username = claims.getSubject();
-//                System.out.println("Usuario en el token: " + username);
                 if (username != null) {
                     // Crear un token de autenticación con los detalles del usuario (sin contraseña)
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -49,7 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             } catch (Exception e) {
-//                e.printStackTrace();
                 // Si el token no es válido o ha expirado, puedes devolver un error o simplemente dejar que pase
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);  // 401 Unauthorized
                 return;

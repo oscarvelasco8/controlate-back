@@ -19,25 +19,34 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    //Metodo para obtener todos los usuarios
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    //Metodo para obtener un usuario por su username
+
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findById(username);
     }
+
+    //Metodo para obtener un usuario por su email
     public Optional<User> getUserByEmail(String email) {
         return this.getAllUsers().stream().filter(user -> user.getEmail().equals(email)).findFirst();
     }
+
+    //Metodo para crear un nuevo usuario
 
     public void createUser(User user) {
         user.setObjective(User.objective.MANTENIMIENTO);
         userRepository.save(user);
     }
 
+    //Metodo para actualizar un usuario
+
     public User updateUser(String username, User userDetails) {
-        //System.out.println(userDetails.getPassword());
-        //System.out.println(userDetails.getPassword() != null);
+        //Recogemos los datos del usuario siempre y cuando no sean nulos
         return userRepository.findById(username).map(user -> {
             if (userDetails.getName() != null) {
                 user.setName(userDetails.getName());
@@ -82,16 +91,19 @@ public class UserService {
         }).orElseThrow(() -> new RuntimeException("User not found with username: " + username));
     }
 
+    //Metodo para actualizar el objetivo del usuario
     public void updateObjective(String username, String objective) {
         User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found with username: " + username));
         user.setObjective(User.objective.valueOf(objective));
         userRepository.save(user);
     }
 
-
+    //Metodo para eliminar un usuario
     public void deleteUser(String username) {
         userRepository.deleteById(username);
     }
+
+    //Metodo para calcular el TMB del usuario
 
     public float calculateTMB(User user) {
         float tmb;
@@ -109,7 +121,7 @@ public class UserService {
         return tmb * getActivityFactorValue(user.getActivityFactor()) * getObjectiveValue(user.getObjective());
     }
 
-
+    // Obtener el valor del factor de actividad
     private float getActivityFactorValue(User.FactorActividad activityFactor) {
         return switch (activityFactor) {
             case POCO_SEDENTARIO -> 1.375f;
@@ -120,6 +132,7 @@ public class UserService {
         };
     }
 
+    // Obtener el valor del objetivo
     private float getObjectiveValue(User.objective objective) {
         return switch (objective) {
             case BAJAR_LIGERO -> 0.9f;
@@ -130,10 +143,13 @@ public class UserService {
         };
     }
 
+    // Actualizar el objetivo del usuario
+
     public void setObjective(User user, User.objective objective) {
         user.setObjective(objective);
     }
 
+    // Obtener el objetivo del usuario
     public User.objective getObjective(User user) {
         return user.getObjective();
     }

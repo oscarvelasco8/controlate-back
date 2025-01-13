@@ -34,6 +34,8 @@ public class FoodService {
     @Autowired
     private ApiTranslateService apiTranslateService;
 
+    //Metodo para generar el nonce de la peticion
+
     private String generateNonce(int length) {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder nonce = new StringBuilder();
@@ -44,11 +46,14 @@ public class FoodService {
         return nonce.toString();
     }
 
+    //Metodo para generar el timestamp
     private long getTimestamp() {
         long currentTimestamp = System.currentTimeMillis() / 1000;
         lastTimestamp = Math.max(lastTimestamp, currentTimestamp);
         return lastTimestamp;
     }
+
+    //Metodo para generar la signature base string de la peticion
 
     private String createSignatureBaseString(String method, String url, Map<String, String> params) {
         String sortedParams = params.entrySet().stream()
@@ -58,6 +63,8 @@ public class FoodService {
         return method.toUpperCase() + "&" + encode(url) + "&" + encode(sortedParams);
     }
 
+    //Metodo para calcular la signature en base a algoritmo HMAC
+
     private String calculateSignature(String baseString, String consumerSecret, String tokenSecret) throws Exception {
         String key = encode(consumerSecret) + "&" + (tokenSecret.isEmpty() ? "" : encode(tokenSecret));
         Mac mac = Mac.getInstance("HmacSHA1");
@@ -66,6 +73,8 @@ public class FoodService {
         byte[] hash = mac.doFinal(baseString.getBytes(StandardCharsets.UTF_8));
         return Base64.getEncoder().encodeToString(hash);
     }
+
+    //Metodo para generar los parámetros OAuth
 
     private Map<String, String> createOAuthParams() {
         Map<String, String> oauthParams = new TreeMap<>();
@@ -77,12 +86,16 @@ public class FoodService {
         return oauthParams;
     }
 
+    //Metodo para generar el encabezado de autorización
+
     private String generateAuthorizationHeader(Map<String, String> oauthParams, String signature) {
         oauthParams.put("oauth_signature", signature);
         return "OAuth " + oauthParams.entrySet().stream()
                 .map(e -> encode(e.getKey()) + "=\"" + encode(e.getValue()) + "\"")
                 .collect(Collectors.joining(","));
     }
+
+    //Metodo para codificar un parámetro
 
     private String encode(String value) {
         try {
@@ -94,14 +107,16 @@ public class FoodService {
         }
     }
 
+    //Metodo para buscar productos por nombre
+
     public ResponseEntity<String> getProductsByName(String searchTerm, int pageNumber, int maxResults) throws Exception {
         // Traducir y reemplazar espacios con comas
         String translatedTerm = apiTranslateService.translate(searchTerm, "en", "es").replaceAll(" ", ",");
-//        System.out.println("Translated Search Term (for URL): " + translatedTerm);
+
 
         // Codificar para la firma exactamente dos veces
         String doubleEncodedTerm = encode(encode(translatedTerm));
-//        System.out.println("Double Encoded Search Term (for Signature): " + doubleEncodedTerm);
+
 
         // Parámetros de consulta para la firma (usar término doblemente codificado aquí)
         Map<String, String> queryParams = new TreeMap<>();
@@ -116,7 +131,7 @@ public class FoodService {
 
         // Crear la firma base con los parámetros ordenados y el término doblemente codificado
         String baseString = createSignatureBaseString("GET", baseUrl.concat(this.searchByNameUrl), queryParams);
-//        System.out.println("Base String: " + baseString);
+
 
         // Generar la firma
         String signature = calculateSignature(baseString, consumerSecret, "");
@@ -136,13 +151,14 @@ public class FoodService {
                 + "?search_expression=" + translatedTerm // Sin codificar nuevamente
                 + "&format=json&page_number=" + pageNumber
                 + "&max_results=" + maxResults;
-        //System.out.println("Request URL: " + url);
+
 
         // Realizar la solicitud
         HttpEntity<String> entity = new HttpEntity<>(headers);
         return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
     }
 
+    //Metodo para buscar un producto por su ID
 
     public ResponseEntity<String> getProductById(String id) throws Exception {
         Map<String, String> queryParams = Map.of(
@@ -151,19 +167,26 @@ public class FoodService {
         );
 
         Map<String, String> oauthParams = createOAuthParams();
+
+        // Crear la firma base
         String baseString = createSignatureBaseString("GET", baseUrl.concat(this.searchByIdUrl), new TreeMap<>(queryParams) {{
             putAll(oauthParams);
         }});
+
+        // Generar la firma
         String signature = calculateSignature(baseString, consumerSecret, "");
 
+        // Crear encabezado de autorización
         String authorizationHeader = generateAuthorizationHeader(oauthParams, signature);
 
+        // Configurar encabezados
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", authorizationHeader);
         headers.set("Content-Type", "application/json");
         headers.set("Accept", "application/json");
 
+        // Realizar la solicitud
         HttpEntity<String> entity = new HttpEntity<>(headers);
         return restTemplate.exchange(baseUrl.concat(this.searchByIdUrl) + "?food_id=" + encode(id) + "&format=json", HttpMethod.GET, entity, String.class);
     }

@@ -26,7 +26,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("BearerAuth", bearerAuthScheme))
                 .addSecurityItem(securityRequirement) // Asocia el esquema a todas las rutas protegidas
-                .info(new io.swagger.v3.oas.models.info.Info()
+                .info(new io.swagger.v3.oas.models.info.Info() // Información de la API
                         .title("API de Controlate")
                         .description("API que gestiona el backend de la aplicación web Controlate")
                         .version("1.0.0")

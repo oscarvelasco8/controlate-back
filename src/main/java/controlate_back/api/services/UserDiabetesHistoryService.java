@@ -19,25 +19,34 @@ public class UserDiabetesHistoryService {
     @Autowired
     private UserDiabetesHistoryRepository userDiabetesHistoryRepository;
 
+    // Metodo para obtener todo el historial de diabetes
+
     public List<UserDiabetesHistory> getAllDiabetesHistory() {
         return userDiabetesHistoryRepository.findAll();
     }
 
+    // Metodo para obtener un registro de diabetes por su ID
     public Optional<UserDiabetesHistory> getDiabetesHistoryById(String logId) {
         return userDiabetesHistoryRepository.findById(logId);
     }
 
+    // Metodo para crear un nuevo registro de diabetes
     public UserDiabetesHistory saveDiabetesHistory(UserDiabetesHistory history) {
         return userDiabetesHistoryRepository.save(history);
     }
+
+    // Metodo para eliminar un registro de diabetes
 
     public void deleteDiabetesHistory(String logId) {
         userDiabetesHistoryRepository.deleteById(logId);
     }
 
+    // Metodo para obtener un registro de diabetes por username y fecha
     public List<UserDiabetesHistory> getDiabetesHistoryByMeal(String username, LocalDate logDate) {
         return userDiabetesHistoryRepository.findByUsernameAndDate(username, logDate);
     }
+
+    // Metodo para obtener registros de diabetes por username y rango de fechas
 
     public Map<LocalDate, Double> getPortionsForDateRange(String username, LocalDate startDate) {
         //System.out.println("START DATE: " + startDate);
@@ -67,6 +76,7 @@ public class UserDiabetesHistoryService {
         return result;
     }
 
+    // Metodo para generar un rango de fechas
 
     private List<LocalDate> generateDateRange(LocalDate startDate, LocalDate endDate) {
         return Stream.iterate(startDate, date -> date.plusDays(1))

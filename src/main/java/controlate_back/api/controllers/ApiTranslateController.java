@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Traducción de Palabras", description = "Operaciones relacionadas con la traduccón de palabras")
 @RestController
 @RequestMapping("/api/translate")
 public class ApiTranslateController {
@@ -39,8 +41,7 @@ public class ApiTranslateController {
                     @Parameter(name = "text", description = "Texto a traducir", required = true),
                     @Parameter(name = "targetLanguage", description = "Idioma de destino (código ISO-639-1, por ejemplo, 'en')", required = false, example = "en"),
                     @Parameter(name = "sourceLanguage", description = "Idioma de origen (código ISO-639-1, por ejemplo, 'es')", required = false, example = "es")
-            },
-            tags = {"Traductor de palabras"}
+            }
     )
 
     @GetMapping
