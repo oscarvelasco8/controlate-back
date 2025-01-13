@@ -35,12 +35,6 @@ public class ApiTranslateController {
                             content = @Content(mediaType = "text/plain")
                     )
             },
-            security = {
-                    @io.swagger.v3.oas.annotations.security.SecurityRequirement(
-                            name = "BearerAuth",
-                            scopes = {"read"}
-                    )
-            },
             parameters = {
                     @Parameter(name = "text", description = "Texto a traducir", required = true),
                     @Parameter(name = "targetLanguage", description = "Idioma de destino (código ISO-639-1, por ejemplo, 'en')", required = false, example = "en"),
