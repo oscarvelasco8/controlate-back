@@ -1,7 +1,6 @@
 package controlate_back.api.controllers;
 
 import controlate_back.api.models.UserCaloriesHistory;
-import controlate_back.api.models.UserDiabetesHistory;
 import controlate_back.api.services.UserCaloriesHistoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -224,7 +223,6 @@ public class UserCaloriesHistoryController {
 
         // Reconstruir la fecha con los ceros añadidos si es necesario
         logDate = year + "-" + month + "-" + day;
-        System.out.println(logDate);
         // Define el formato de la fecha
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

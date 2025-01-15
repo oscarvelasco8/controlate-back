@@ -55,7 +55,6 @@ public class UserCaloriesHistoryService {
 
         // Generar las fechas en el rango (desde endDate hasta startDate)
         List<LocalDate> dateRange = generateDateRange(endDate, startDate);
-        //System.out.println(dateRange);
 
         // Crear un mapa de las calorías por fecha utilizando TreeMap para mantener el orden
         Map<LocalDate, Double> caloriesMap = records.stream()
