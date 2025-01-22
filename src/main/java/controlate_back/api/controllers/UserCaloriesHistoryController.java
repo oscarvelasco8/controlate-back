@@ -126,7 +126,32 @@ public class UserCaloriesHistoryController {
     // Crear un nuevo registro de historia de calorías
     @PostMapping
     public ResponseEntity<?> createCaloriesHistory(@RequestBody List<UserCaloriesHistory> history) {
-        history.forEach(userCaloriesHistory -> userCaloriesHistoryService.saveCaloriesHistory(userCaloriesHistory));
+        history.forEach(userCaloriesHistory ->{
+            String logDate = userCaloriesHistory.getLogDate().toString();
+            String[] dateParts = logDate.split("-"); // Dividir la fecha una vez
+            String year = dateParts[0];
+            String month = dateParts[1];
+            String day = dateParts[2];
+
+            // Asegurarse de que el mes y el día tienen dos dígitos
+            if (month.length() == 1) {
+                month = "0" + month;
+            }
+            if (day.length() == 1) {
+                day = "0" + day;
+            }
+
+            // Reconstruir la fecha con los ceros añadidos si es necesario
+            logDate = year + "-" + month + "-" + day;
+            // Define el formato de la fecha
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            // Parsea la fecha con el formato correcto
+            LocalDate parsedDate = LocalDate.parse(logDate, formatter);
+
+            userCaloriesHistory.setLogDate(parsedDate);
+            userCaloriesHistoryService.saveCaloriesHistory(userCaloriesHistory);
+        });
         return ResponseEntity.ok(history);
     }
 

@@ -127,7 +127,32 @@ public class UserDiabetesHistoryController {
     // Crear un nuevo registro de historia de calorías
     @PostMapping
     public ResponseEntity<?> createDiabetesHistory(@RequestBody List<UserDiabetesHistory> history) {
-        history.forEach(userDiabetesHistory -> userDiabetesHistoryService.saveDiabetesHistory(userDiabetesHistory));
+        history.forEach(userDiabetesHistory ->{
+            String logDate = userDiabetesHistory.getLogDate().toString();
+            String[] dateParts = logDate.split("-"); // Dividir la fecha una vez
+            String year = dateParts[0];
+            String month = dateParts[1];
+            String day = dateParts[2];
+
+            // Asegurarse de que el mes y el día tienen dos dígitos
+            if (month.length() == 1) {
+                month = "0" + month;
+            }
+            if (day.length() == 1) {
+                day = "0" + day;
+            }
+
+            // Reconstruir la fecha con los ceros añadidos si es necesario
+            logDate = year + "-" + month + "-" + day;
+            // Define el formato de la fecha
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            // Parsea la fecha con el formato correcto
+            LocalDate parsedDate = LocalDate.parse(logDate, formatter);
+
+            userDiabetesHistory.setLogDate(parsedDate);
+            userDiabetesHistoryService.saveDiabetesHistory(userDiabetesHistory);
+        });
         return ResponseEntity.ok(history);
     }
 
