@@ -135,8 +135,8 @@ public class UserService {
     // Obtener el valor del objetivo
     private float getObjectiveValue(User.objective objective) {
         return switch (objective) {
-            case BAJAR_LIGERO -> 0.8f;
-            case BAJAR_MODERADO -> 0.9f;
+            case BAJAR_LIGERO -> 0.9f;
+            case BAJAR_MODERADO -> 0.8f;
             case SUBIR_MODERADO -> 1.3f;
             case SUBIR_LIGERO -> 1.2f;
             default -> 1.0f;
