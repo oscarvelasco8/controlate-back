@@ -125,9 +125,9 @@ public class UserService {
     private float getActivityFactorValue(User.FactorActividad activityFactor) {
         return switch (activityFactor) {
             case POCO_SEDENTARIO -> 1.375f;
-            case MODERADAMENTE_SEDENTARIO -> 1.55f;
-            case ACTIVO -> 1.725f;
-            case MUY_ACTIVO -> 1.9f;
+            case MODERADAMENTE_SEDENTARIO -> 1.40f;
+            case ACTIVO -> 1.475f;
+            case MUY_ACTIVO -> 1.60f;
             default -> 1.2f;
         };
     }
